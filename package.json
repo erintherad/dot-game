@@ -1,0 +1,24 @@
+{
+  "name": "dot-game",
+  "version": "1.0.0",
+  "description": "a tiny dot game",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^4.16.3",
+    "node-sass-middleware": "^0.11.0"
+  },
+  "engines": {
+    "node": "4.4.5"
+  },
+  "keywords": [
+    "node",
+    "express",
+    "sass"
+  ],
+  "license": "MIT",
+  "author": "Erin Mahoney"
+}

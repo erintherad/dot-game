@@ -4,6 +4,30 @@ window.addEventListener("load", function() {
     const ctx = canvas.getContext("2d");
 
     if (canvas.getContext) {
+        class Circle {
+            constructor(x, y, radius) {
+                this.x = x;
+                this.y = y;
+                this.radius = radius;
+            }
+            update() {
+                const circle = new Path2D();
+                circle.arc(
+                    this.x,
+                    this.y,
+                    this.radius,
+                    0,
+                    2 * Math.PI,
+                    false
+                );
+                ctx.stroke(circle);
+            }
+            draw() {
+                var circle = new Circle(100, 75, 50);
+                circle.update();
+            }
+        }
+
         class Board {
             constructor(width, height) {
                 this.width = width;
@@ -26,6 +50,9 @@ window.addEventListener("load", function() {
                 const scoreBoard = document.getElementById("scoreBoard");
                 const score = `<h3>Score: ${this.score}</h3>`;
                 scoreBoard.innerHTML = score;
+
+                var circle = new Circle(100, 75, 50);
+                circle.draw();
             }
         }
 

@@ -37,6 +37,9 @@ window.addEventListener("load", function() {
                 ctx.canvas.width = this.width;
                 ctx.canvas.height = this.height;
             }
+            clear() {
+                ctx.clearRect(0, 0, this.width, this.height);
+            }
         }
 
         class Game {
@@ -59,5 +62,16 @@ window.addEventListener("load", function() {
         const board = new Board(400, 400);
         const game = new Game(0, board);
         game.newGame();
+
+        const reset = document.getElementById("reset");
+        reset.addEventListener("click", function() {
+            board.clear();
+        });
+
+        const start = document.getElementById("start");
+        start.addEventListener("click", function() {
+            var circle = new Circle(100, 75, 50);
+            circle.draw();
+        });
     }
 });

@@ -20,5 +20,8 @@
     "sass"
   ],
   "license": "MIT",
-  "author": "Erin Mahoney"
+  "author": "Erin Mahoney",
+  "devDependencies": {
+    "eslint": "^5.9.0"
+  }
 }

@@ -150,4 +150,13 @@ window.addEventListener("load", function() {
             }
         }
     });
+
+    const slider = document.getElementById("slider");
+    slider.min = game.board.speed;
+    slider.max = 5;
+    slider.value = 1;
+    slider.addEventListener("change", function() {
+        console.log("changed")
+        game.board.speed = parseInt(slider.value);
+    });
 });

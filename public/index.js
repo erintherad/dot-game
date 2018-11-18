@@ -24,6 +24,11 @@ window.addEventListener("load", function() {
             );
             ctx.fill(circle);
         }
+        intersects(x, y, cx, cy) {
+            var dx = x - cx;
+            var dy = y - cy;
+            return dx * dx + dy * dy <= this.radius * this.radius;
+        }
     }
 
     class Board {
@@ -40,11 +45,14 @@ window.addEventListener("load", function() {
             ctx.canvas.width = this.width;
             ctx.canvas.height = this.height;
         }
+        getRandomNumber(min, max) {
+            return Math.floor((Math.random() * max) + min);
+        }
         addCircle() {
             const circle = new Circle(
-                getRandom(0, 400),
-                getRandom(0, -400),
-                getRandom(10, 50)
+                this.getRandomNumber(0, 400),
+                this.getRandomNumber(0, -400),
+                this.getRandomNumber(10, 50)
             );
             this.circles.push(circle);
         }
@@ -110,7 +118,6 @@ window.addEventListener("load", function() {
         }
     }
 
-    // const board = new Board(400, 400);
     const game = new Game();
     game.newGame();
 
@@ -137,20 +144,10 @@ window.addEventListener("load", function() {
         for (var i = 0; i < game.board.circles.length; i ++) {
             const cx = game.board.circles.length ? game.board.circles[i].x : 0;
             const cy = game.board.circles.length ? game.board.circles[i].y : 0;
-            const r = game.board.circles.length ? game.board.circles[i].radius : 0;
-            if (intersects(x, y, cx, cy, r)) {
+            if (game.board.circles[i].intersects(x, y, cx, cy)) {
                 game.setScore(1);
                 game.board.circles.splice(i, 1);
             }
         }
     });
-
-    function intersects(x, y, cx, cy, r) {
-        var dx = x - cx;
-        var dy = y - cy;
-        return dx * dx + dy * dy <= r * r;
-    }
-    function getRandom(min, max) {
-        return Math.floor((Math.random() * max) + min);
-    }
 });

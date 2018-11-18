@@ -41,11 +41,23 @@ window.addEventListener("load", function() {
                     getRandom(10, 50)
                 );
                 board.circles.push(circle);
-                circle.draw();
+                setInterval(board.animate(), 10);
             }
             clear() {
                 this.circles = [];
                 ctx.clearRect(0, 0, this.width, this.height);
+            }
+            animate() {
+                ctx.clearRect(0, 0, board.width, board.height);
+
+                for (var i = 0; i < board.circles.length; i++) {
+                    const circle = board.circles[i];
+                    circle.draw();
+                    if (circle.y < board.height - circle.radius) {
+                        circle.y += 1;
+                    }
+                }
+                window.requestAnimationFrame(board.animate);
             }
         }
 

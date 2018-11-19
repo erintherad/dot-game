@@ -188,9 +188,6 @@ window.addEventListener("load", function() {
     class Game {
         constructor() {
             this.score = new Score();
-            this.resetButton = new Button(this, "Reset", function() {
-                this.game.reset();
-            });
             this.startButton = new Button(this, "Start", function() {
                 this.disable();
                 this.game.reset();
@@ -206,7 +203,6 @@ window.addEventListener("load", function() {
         draw() {
             this.score.draw();
             this.startButton.draw();
-            this.resetButton.draw();
             this.speedSlider.draw();
             this.board.draw();
         }

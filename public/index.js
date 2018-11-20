@@ -10,6 +10,11 @@ class Circle {
         this.radius = radius;
         this.ctx = ctx;
         this.points = Math.floor((MAX_SCORE + 1) - (radius * 2) / MAX_SCORE);
+        this.color = this.randomColor();
+    }
+    randomColor() {
+        const colors = ["red", "orange", "yellow", "green", "blue", "purple"];
+        return colors[Math.floor(Math.random() * colors.length)];
     }
     draw() {
         const circle = new Path2D();
@@ -21,6 +26,7 @@ class Circle {
             2 * Math.PI,
             false
         );
+        this.ctx.fillStyle = this.color;
         this.ctx.fill(circle);
     }
     intersects(x, y, cx, cy) {

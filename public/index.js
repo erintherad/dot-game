@@ -1,4 +1,7 @@
 const MAX_SCORE = 10;
+const HEADER_HEIGHT = 250;
+const CANVAS_WIDTH = window.innerWidth;
+const CANVAS_HEIGHT = window.innerHeight - HEADER_HEIGHT; //give us some room for the header
 
 class Circle {
     constructor(x, y, radius, ctx) {
@@ -38,6 +41,11 @@ class Board {
         this.game = game;
         this.ctx = null;
     }
+    resize() {
+        var canvas = document.getElementById("container");
+        canvas.width = this.game.getWidth();
+        canvas.height = this.game.getHeight() - HEADER_HEIGHT;
+    }
     draw() {
         const canvas = document.createElement("canvas");
         canvas.id = "container";
@@ -69,6 +77,10 @@ class Board {
                 }
             }
         }.bind(this));
+
+        window.addEventListener("resize", function() {
+            this.resize();
+        }.bind(this));
     }
     // from MDN Math.random() docs
     genRandomNumberInclusive(min, max) {
@@ -79,7 +91,8 @@ class Board {
     addCircle() {
         const radius = this.genRandomNumberInclusive(5, 50);
         const circle = new Circle(
-            this.genRandomNumberInclusive(radius, 400 - radius),
+            this.genRandomNumberInclusive(
+                radius, this.game.getWidth() - radius),
             -radius,
             radius,
             this.ctx
@@ -95,7 +108,7 @@ class Board {
         this.ctx.clearRect(0, 0, this.width, this.height);
     }
     animate() {
-        this.ctx.clearRect(0, 0, this.width, this.height);
+        this.ctx.clearRect(0, 0, this.game.getWidth(), this.height);
 
         for (var i = 0; i < this.circles.length; i++) {
             const circle = this.circles[i];
@@ -123,7 +136,7 @@ class Button {
     draw() {
         this.element = document.createElement("button");
         this.render();
-        document.body.append(this.element);
+        document.getElementById("header").append(this.element);
         this.element.addEventListener("click", function() {
             if (this.text === "Start") {
                 this.game.start();
@@ -167,7 +180,7 @@ class Slider {
 
         div.appendChild(slider);
         div.appendChild(label);
-        document.body.append(div);
+        document.getElementById("header").append(div);
 
         slider.addEventListener("change", this.changeFunction.bind(this));
     }
@@ -180,7 +193,7 @@ class Score {
     draw() {
         this.element = document.createElement("h2");
         this.render();
-        document.body.append(this.element);
+        document.getElementById("header").append(this.element);
     }
     render() {
         this.element.innerText = `Score: ${this.score}`;
@@ -199,7 +212,8 @@ class Game {
             const slider = event.target;
             this.game.board.speed = parseInt(slider.value);
         });
-        this.board = new Board(400, 400, this);
+        this.board = new Board(
+            CANVAS_WIDTH, CANVAS_HEIGHT, this);
         this.active = null;
     }
     init() {
@@ -207,6 +221,12 @@ class Game {
         this.startButton.draw();
         this.speedSlider.draw();
         this.board.draw();
+    }
+    getWidth() {
+        return document.documentElement.clientWidth;
+    }
+    getHeight() {
+        return document.documentElement.clientHeight;
     }
     start() {
         this.active = true;

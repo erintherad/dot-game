@@ -1,5 +1,5 @@
 const MAX_SCORE = 10;
-const HEADER_HEIGHT = 250;
+const HEADER_HEIGHT = 220;
 const CANVAS_WIDTH = window.innerWidth;
 const CANVAS_HEIGHT = window.innerHeight - HEADER_HEIGHT; //give us some room for the header
 
@@ -191,11 +191,13 @@ class Button {
     draw() {
         this.element = document.createElement("button");
         this.render();
-        document.getElementById("header").append(this.element);
+        document.getElementById("control").append(this.element);
         this.element.addEventListener("click", function() {
             if (this.text === "Start") {
+                this.element.classList.add("pause");
                 this.game.start();
             } else {
+                this.element.classList.remove("pause");
                 this.game.pause();
             }
             this.toggle();
@@ -236,7 +238,7 @@ class Slider {
 
         div.appendChild(slider);
         div.appendChild(label);
-        document.getElementById("header").append(div);
+        document.getElementById("control").append(div);
 
         slider.addEventListener("change", this.changeFunction.bind(this));
     }
@@ -283,7 +285,7 @@ class ModeSwitcher {
         form.appendChild(randomLabel);
         form.appendChild(discoRadio);
         form.appendChild(discoLabel);
-        document.getElementById("header").append(form);
+        document.getElementById("control").append(form);
 
         const changeHandler = function(e) {
             const radio = e.target;
@@ -301,9 +303,9 @@ class Score {
         this.score = 0;
     }
     draw() {
-        this.element = document.createElement("h2");
+        this.element = document.createElement("h3");
         this.render();
-        document.getElementById("header").append(this.element);
+        document.getElementById("title").append(this.element);
     }
     render() {
         this.element.innerText = `Score: ${this.score}`;

@@ -11,23 +11,35 @@ class Circle {
         this.ctx = ctx;
         this.points = Math.floor((MAX_SCORE + 1) - (radius * 2) / MAX_SCORE);
         this.color = this.randomColor();
+        this.pattern = null;
     }
     randomColor() {
         const colors = ["red", "orange", "yellow", "green", "blue", "purple"];
         return colors[Math.floor(Math.random() * colors.length)];
     }
     draw() {
-        const circle = new Path2D();
-        circle.arc(
-            this.x,
-            this.y,
-            this.radius,
-            0,
-            2 * Math.PI,
-            false
-        );
-        this.ctx.fillStyle = this.color;
-        this.ctx.fill(circle);
+        if (this.pattern) {
+            this.ctx.drawImage(
+                this.pattern,
+                this.x - this.radius,
+                this.y - this.radius,
+                this.radius * 2,
+                this.radius * 2
+            );
+
+        } else {
+            const circle = new Path2D();
+            circle.arc(
+                this.x,
+                this.y,
+                this.radius,
+                0,
+                2 * Math.PI,
+                false
+            );
+            this.ctx.fillStyle = this.color;
+            this.ctx.fill(circle);
+        }
     }
     intersects(x, y, cx, cy) {
         var dx = x - cx;
@@ -105,6 +117,11 @@ class Board {
             radius,
             this.ctx
         );
+        if (this.mode === "disco") {
+            const image = document.createElement("img");
+            image.src = "/assets/disco.png";
+            circle.pattern = image;
+        }
         this.circles.push(circle);
     }
     populate() {
@@ -134,17 +151,33 @@ class Board {
         window.cancelAnimationFrame(this.animationInterval);
     }
     changeMode(mode) {
+        this.mode = mode;
+
         if (this.modeInterval) {
             clearInterval(this.modeInterval);
         }
 
-        if (mode === "party") {
+        for(var i = 0; i < this.circles.length; i++) {
+            const circle = this.circles[i];
+            circle.pattern = null;
+        }
+
+        if (mode === "random") {
             this.modeInterval = setInterval(function() {
                 for(var i = 0; i < this.circles.length; i++) {
                     const circle = this.circles[i];
                     circle.color = circle.randomColor();
                 }
             }.bind(this), 150);
+        } else if (mode === "disco") {
+            for(var j = 0; j < this.circles.length; j++) {
+                const circle = this.circles[j];
+
+                const image = document.createElement("img");
+                image.src = "/assets/disco.png";
+
+                circle.pattern = image;
+            }
         }
     }
 }
@@ -226,19 +259,30 @@ class ModeSwitcher {
         defaultLabel.innerText = "Default";
         defaultLabel.htmlFor = "default";
 
-        const partyRadio = document.createElement("input");
-        partyRadio.type = "radio";
-        partyRadio.value = "party";
-        partyRadio.name = "mode";
-        partyRadio.id = "party";
-        const partyLabel = document.createElement("label");
-        partyLabel.innerText = "Party";
-        partyLabel.htmlFor = "party";
+        const randomRadio = document.createElement("input");
+        randomRadio.type = "radio";
+        randomRadio.value = "random";
+        randomRadio.name = "mode";
+        randomRadio.id = "random";
+        const randomLabel = document.createElement("label");
+        randomLabel.innerText = "Random";
+        randomLabel.htmlFor = "random";
+
+        const discoRadio = document.createElement("input");
+        discoRadio.type = "radio";
+        discoRadio.value = "disco";
+        discoRadio.name = "mode";
+        discoRadio.id = "disco";
+        const discoLabel = document.createElement("label");
+        discoLabel.innerText = "Disco";
+        discoLabel.htmlFor = "disco";
 
         form.appendChild(defaultRadio);
         form.appendChild(defaultLabel);
-        form.appendChild(partyRadio);
-        form.appendChild(partyLabel);
+        form.appendChild(randomRadio);
+        form.appendChild(randomLabel);
+        form.appendChild(discoRadio);
+        form.appendChild(discoLabel);
         document.getElementById("header").append(form);
 
         const changeHandler = function(e) {
@@ -247,7 +291,8 @@ class ModeSwitcher {
         }.bind(this);
 
         defaultRadio.addEventListener("change", changeHandler);
-        partyRadio.addEventListener("change", changeHandler);
+        randomRadio.addEventListener("change", changeHandler);
+        discoRadio.addEventListener("change", changeHandler);
     }
 }
 

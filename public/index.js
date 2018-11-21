@@ -46,6 +46,8 @@ class Board {
         this.animationInterval = 0;
         this.game = game;
         this.ctx = null;
+        this.mode = "default";
+        this.modeInterval = null;
     }
     resize() {
         var canvas = document.getElementById("container");
@@ -131,6 +133,20 @@ class Board {
         window.clearInterval(this.circleInterval);
         window.cancelAnimationFrame(this.animationInterval);
     }
+    changeMode(mode) {
+        if (this.modeInterval) {
+            clearInterval(this.modeInterval);
+        }
+
+        if (mode === "party") {
+            this.modeInterval = setInterval(function() {
+                for(var i = 0; i < this.circles.length; i++) {
+                    const circle = this.circles[i];
+                    circle.color = circle.randomColor();
+                }
+            }.bind(this), 150);
+        }
+    }
 }
 
 class Button {
@@ -193,6 +209,48 @@ class Slider {
     }
 }
 
+class ModeSwitcher {
+    constructor(board) {
+        this.board = board;
+    }
+    draw() {
+        const form = document.createElement("form");
+
+        const defaultRadio = document.createElement("input");
+        defaultRadio.type = "radio";
+        defaultRadio.value = "default";
+        defaultRadio.name = "mode";
+        defaultRadio.checked = true;
+        defaultRadio.id = "default";
+        const defaultLabel = document.createElement("label");
+        defaultLabel.innerText = "Default";
+        defaultLabel.htmlFor = "default";
+
+        const partyRadio = document.createElement("input");
+        partyRadio.type = "radio";
+        partyRadio.value = "party";
+        partyRadio.name = "mode";
+        partyRadio.id = "party";
+        const partyLabel = document.createElement("label");
+        partyLabel.innerText = "Party";
+        partyLabel.htmlFor = "party";
+
+        form.appendChild(defaultRadio);
+        form.appendChild(defaultLabel);
+        form.appendChild(partyRadio);
+        form.appendChild(partyLabel);
+        document.getElementById("header").append(form);
+
+        const changeHandler = function(e) {
+            const radio = e.target;
+            this.board.changeMode(radio.value);
+        }.bind(this);
+
+        defaultRadio.addEventListener("change", changeHandler);
+        partyRadio.addEventListener("change", changeHandler);
+    }
+}
+
 class Score {
     constructor() {
         this.score = 0;
@@ -222,12 +280,14 @@ class Game {
         this.board = new Board(
             CANVAS_WIDTH, CANVAS_HEIGHT, this);
         this.active = null;
+        this.modeSwitcher = new ModeSwitcher(this.board);
     }
     init() {
         this.score.draw();
         this.startButton.draw();
         this.speedSlider.draw();
         this.board.draw();
+        this.modeSwitcher.draw();
     }
     getWidth() {
         return document.documentElement.clientWidth;

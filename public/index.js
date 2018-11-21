@@ -179,6 +179,7 @@ class Slider {
         slider.min = 10;
         slider.max = 100;
         slider.step = 10;
+        slider.onKeydown = true;
         slider.value = this.game.board.speed;
 
         const label = document.createElement("label");

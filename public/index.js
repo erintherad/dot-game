@@ -224,6 +224,7 @@ class Slider {
     }
     draw() {
         const div = document.createElement("div");
+        div.id = "slider"
 
         const slider = document.createElement("input");
         slider.type = "range";
